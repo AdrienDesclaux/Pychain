@@ -2,7 +2,7 @@ import time
 
 class Block:
     def __init__(self, previous_hash, transactions, nonce, difficulty):
-        self.transactions = transactions
+        self.transaction: List[Transaction] = transactions
         self.timestamp = time.time()
         self.previous_hash = previous_hash
         self.nonce = nonce
@@ -16,20 +16,20 @@ class Block:
 
     def calculate_hash(self):
         import hashlib
-        block_string = f"{self.previous_hash}{self.timestamp}{self.nonce}{self.transactions}"
+        block_string = f"{self.previous_hash}{self.timestamp}{self.nonce}{self.transaction}"
         return hashlib.sha256(block_string.encode()).hexdigest()
 
-    def calculate_difficulty(self, old_difficulty, actual_time_seconds, target_time_seconds=30 * 100):  #ajoustement tout les les 30 minutes
-        min_adjustment_factor = 0.25
-        max_adjustment_factor = 4.0
-
-        adjustment_factor = actual_time_seconds / target_time_seconds
-        adjustment_factor = max(min_adjustment_factor, min(adjustment_factor, max_adjustment_factor))
-
-        new_difficulty = old_difficulty * adjustment_factor
-        return new_difficulty
+    def mine_block(self):
+        """
+        Mines the block by finding a nonce that produces a hash with a prefix of '0' * difficulty.
+        """
+        self.nonce = 0
+        computed_hash = self.calculate_hash()
+        target = '0' * self.difficulty
+        while not computed_hash.startswith(target):
+            self.nonce += 1
+            computed_hash = self.calculate_hash()
+        self.hash = computed_hash
     
     def get_timestamp(self):
         return self.timestamp
-    
-    

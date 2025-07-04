@@ -7,5 +7,15 @@ class Transaction:
         self.recipient = recipient
         self.amount = amount
         self.timestamp = timestamp
-        self.block_hash = block_hash    
+        self.block_hash = block_hash
+
+    def get_details(self):
+        return {
+            "sender": self.sender,
+            "recipient": self.recipient,
+            "amount": self.amount,
+            "timestamp": self.timestamp,
+            "block_hash": self.block_hash
+        }
+
 
