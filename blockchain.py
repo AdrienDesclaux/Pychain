@@ -1,6 +1,8 @@
 from transaction import Transaction
 from block import Block
 import time
+from typing import List
+
 
 class Blockchain:
     def __init__(self):
@@ -38,16 +40,16 @@ class Blockchain:
         
         return new_block
 
-        def calculate_difficulty(self, old_difficulty, actual_time_seconds, target_time_seconds=30 * 100):
-        
-          min_adjustment_factor = 0.25
-          max_adjustment_factor = 4.0
+    def calculate_difficulty(self, old_difficulty, actual_time_seconds, target_time_seconds=30 * 100):
 
-          adjustment_factor = actual_time_seconds /   target_time_seconds
-          adjustment_factor = max (min_adjustment_factor, min  (adjustment_factor, max_adjustment_factor))
+        min_adjustment_factor = 0.25
+        max_adjustment_factor = 4.0
 
-          new_difficulty = old_difficulty *   adjustment_factor
-          return new_difficulty
+        adjustment_factor = actual_time_seconds /   target_time_seconds
+        adjustment_factor = max (min_adjustment_factor, min  (adjustment_factor, max_adjustment_factor))
+
+        new_difficulty = old_difficulty *   adjustment_factor
+        return new_difficulty
 
     def add_transaction(self, transaction):  # ✅ Corrigé: ajout de self et parameter
         """Ajoute une transaction à la liste des transactions en attente"""

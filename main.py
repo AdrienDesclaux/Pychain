@@ -3,6 +3,7 @@ from blockchain import Blockchain
 from transaction import Transaction
 
 def main():
+
     # Créer une blockchain
     blockchain = Blockchain()
     
