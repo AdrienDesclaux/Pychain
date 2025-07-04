@@ -7,9 +7,8 @@ import { Providers } from "@/components/providers"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Blockchain Explorer",
-  description: "Modern blockchain explorer with wallet integration",
-    generator: 'v0.dev'
+  title: "Block Explorer",
+  description: "block explorer"
 }
 
 export default function RootLayout({
