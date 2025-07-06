@@ -11,6 +11,7 @@ class Block:
         self.nonce = nonce
         self.difficulty = difficulty
         self.hash = self.calculate_hash()
+        self.is_mined = False
 
     def add_transaction(self, transaction):
         if transaction is None:
@@ -40,11 +41,12 @@ class Block:
             self.hash = self.calculate_hash()
             if self.hash.startswith(target):
                 print(f"Bloc miné! Nonce: {self.nonce}, Hash: {self.hash}")
+                self.is_mined = True
                 break
             self.nonce += 1
             
             # Affichage du progrès
-            if self.nonce % 10000 == 0:
+            if self.nonce % 1000000 == 0:
                 print(f"Tentative {self.nonce}...")
     
     def get_timestamp(self):

@@ -17,14 +17,11 @@ def start_api_server():
 def continuous_mining():
     """Fonction de mining continu pour la blockchain"""
     while True:
-        # Vérifier s'il y a des transactions en attente
-        if blockchain.pending_transactions:
-            print(f"\n[*] Mining en cours avec {len(blockchain.pending_transactions)} transactions...")
-            if blockchain.is_last_block_mined():
-                new_block = blockchain.create_new_block()
-                if new_block:
-                    print(f"[+] Nouveau bloc miné! Hash: {new_block.hash[:10]}...")
-                    blockchain.display_chain()
+        if blockchain.is_last_block_mined() and blockchain.pending_transactions:
+            new_block = blockchain.create_new_block()
+            if new_block:
+                print(f"[+] Nouveau bloc miné! Hash: {new_block.hash[:10]}...")
+                blockchain.display_chain()
                 
                 # Afficher quelques soldes d'exemple
                 if blockchain.blocks and len(blockchain.blocks) > 1:

@@ -59,5 +59,15 @@ def get_balance(address):
     balance = blockchain.get_balance(address)
     return jsonify({'address': address, 'balance': balance})
 
+@app.route('/generate-transactions', methods=['POST'])
+def generate_fake_transactions():
+    """Génère des transactions aléatoires pour tester la blockchain"""
+    num_transactions = blockchain.create_fake_transactions()
+    return jsonify({
+        'success': True,
+        'message': f'{num_transactions} transactions aléatoires ajoutées',
+        'pending_transactions': len(blockchain.pending_transactions)
+    })
+
 if __name__ == '__main__':
     app.run(port=5000)

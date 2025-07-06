@@ -166,6 +166,27 @@ export default function BlockchainExplorer() {
     }
   }
 
+  const createFakeTransaction = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/generate-transactions`, {method: "POST" })
+      if (!response.ok) throw new Error("Fake Transactions failed")
+
+      const data = await response.json();
+      console.log("LA", data)
+      toast({
+        title: "Fake Transactions",
+        description: data.message,
+        variant: "default"
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed create fake ransactions",
+        variant: "destructive",
+      })
+    }
+  }
+
   const formatTimestamp = (timestamp: number) => {
     return new Date(timestamp * 1000).toLocaleString()
   }
@@ -326,6 +347,13 @@ export default function BlockchainExplorer() {
               >
                 Refresh Chain
               </Button>
+              <Button
+                onClick={createFakeTransaction}
+                variant="outline"
+                className="w-full border-gray-600 hover:bg-gray-700 bg-transparent"
+              >
+                Create Fake Transactions
+              </Button>
             </CardContent>
           </Card>
         </div>
@@ -345,7 +373,7 @@ export default function BlockchainExplorer() {
                   <div key={block.hash} className="border border-gray-700 rounded-lg p-4">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3">
                       <Badge variant="outline" className="w-fit mb-2 sm:mb-0">
-                        Block #{chain.length - index}
+                        Block #{chain.length - index - 1}
                       </Badge>
                       <span className="text-sm text-gray-400">{formatTimestamp(block.timestamp)}</span>
                     </div>

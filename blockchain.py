@@ -6,7 +6,7 @@ from typing import List
 
 class Blockchain:
     def __init__(self):
-        self.difficulty = 6
+        self.difficulty = 4
         self.blocks: List[Block] = [self.genesis_block()]
         self.pending_transactions: List[Transaction] = []
 
@@ -21,8 +21,10 @@ class Blockchain:
     def create_new_block(self) -> Block:
         """Crée un nouveau bloc avec les transactions en attente"""
         if not self.pending_transactions:
-            print("Aucune transaction en attente")
+            # print("Aucune transaction en attente")
             return None
+
+        print("Transactions en attente:", self.pending_transactions)    
         
         new_block = Block(
             transactions=self.pending_transactions.copy(),
@@ -35,8 +37,7 @@ class Blockchain:
         
         # Ajouter le bloc à la chaîne
         self.blocks.append(new_block)
-        
-        # Vider les transactions en attente
+
         self.pending_transactions = []
         
         return new_block
@@ -52,7 +53,7 @@ class Blockchain:
         new_difficulty = old_difficulty *   adjustment_factor
         return new_difficulty
 
-    def add_transaction(self, transaction):  # ✅ Corrigé: ajout de self et parameter
+    def add_transaction(self, transaction):
         """Ajoute une transaction à la liste des transactions en attente"""
         if not transaction:
             raise ValueError("Transaction cannot be None")
@@ -108,6 +109,44 @@ class Blockchain:
             for j, tx in enumerate(block.transactions):
                 print(f"    {j+1}. {tx.sender} -> {tx.recipient}: {tx.amount}")
 
+    def create_fake_transactions(self):
+        """Créer des transactions aléatoires et les ajouter à la liste des transactions en attente
+        Génère un nombre aléatoire entre 1 et 100 de transactions avec des montants et adresses aléatoires
+        """
+        import random
+        import string
+        
+        # Générer un nombre aléatoire de transactions entre 1 et 100
+        num_transactions = random.randint(1, 100)
+        print(f"Génération de {num_transactions} transactions aléatoires...")
+        
+        # Liste d'adresses aléatoires pour simulation
+        addresses = [
+            "0x" + ''.join(random.choices(string.hexdigits, k=40)).lower() for _ in range(10)
+        ]
+        
+        # Ajouter des adresses communes pour voir des soldes qui évoluent
+        common_addresses = [
+            "0xce8413cb205c0603269a283b0b4c46f5721a1f98",
+            "0x19a762e00dd1F5F0fcC308782b9ad2A7B127DF93",
+            "0x3a1d2d9f35472542c9a3a9a9dd0e1a4cb5c83787",
+            "0xbd8cca1c56a35731d1ab7d0e24a45523fb30778a",
+            "0x7cd5e2913b1ea3035f823c53fc8bc17f224c71e3"
+        ]
+        
+        addresses.extend(common_addresses)
+        
+        # Créer et ajouter les transactions
+        for _ in range(num_transactions):
+            sender = random.choice(addresses)
+            recipient = random.choice([addr for addr in addresses if addr != sender])
+            amount = random.randint(1, 1000)
+            
+            tx = Transaction(sender, recipient, amount)
+            self.add_transaction(tx)
+        
+        return num_transactions
+
     def is_last_block_mined(self):
         """Vérifie si le dernier bloc a été miné
         
@@ -115,9 +154,8 @@ class Blockchain:
             bool: True si le dernier bloc a été miné et qu'il n'y a pas de transactions en attente,
                   False s'il y a des transactions en attente à miner
         """
-        # Vérifie si le dernier bloc a un hash valide (commence par des zéros selon la difficulté)
         last_block = self.get_latest_block()
-        if not last_block.hash.startswith('0' * self.difficulty):
+        if not last_block.is_mined:
             return False
             
         return True
