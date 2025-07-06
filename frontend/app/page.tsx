@@ -5,7 +5,7 @@ import WalletConnect from "@/components/wallet-connect"
 import BlockchainExplorer from "@/components/blockchain-explorer"
 
 const AUTHORIZED_ADDRESS = "0x19a762e00dd1F5F0fcC308782b9ad2A7B127DF93"
-const AUTHORIZED_ADDRESS2 = "0xc8911b67201e17b8506bb031dc8ecbc4c3d405c3"
+const AUTHORIZED_ADDRESS2 = "0xce8413cb205c0603269a283b0b4c46f5721a1f98"
 
 export default function Home() {
   const [connectedAddress, setConnectedAddress] = useState<string | null>(null)

@@ -1,32 +1,53 @@
-# exemple_utilisation.py
+# main.py - Blockchain avec mining continu et API
+import time
+import threading
+import sys
 from blockchain import Blockchain
 from transaction import Transaction
+from flask import Flask
+from api import app
+from blockchain_instance import blockchain
+
+
+def start_api_server():
+    """Démarre le serveur API Flask dans un thread séparé"""
+    print("Démarrage du serveur API sur http://localhost:5000")
+    app.run(host='0.0.0.0', port=5000, threaded=True)
+
+def continuous_mining():
+    """Fonction de mining continu pour la blockchain"""
+    while True:
+        # Vérifier s'il y a des transactions en attente
+        if blockchain.pending_transactions:
+            print(f"\n[*] Mining en cours avec {len(blockchain.pending_transactions)} transactions...")
+            if blockchain.is_last_block_mined():
+                new_block = blockchain.create_new_block()
+                if new_block:
+                    print(f"[+] Nouveau bloc miné! Hash: {new_block.hash[:10]}...")
+                    blockchain.display_chain()
+                
+                # Afficher quelques soldes d'exemple
+                if blockchain.blocks and len(blockchain.blocks) > 1:
+                    print("\nExemple de soldes:")
+                    for address in set([tx.sender for tx in new_block.transactions] + [tx.recipient for tx in new_block.transactions]):
+                        if address != "SYSTEM": 
+                            print(f"Solde {address}: {blockchain.get_balance(address)}")
 
 def main():
-
-    # Créer une blockchain
-    blockchain = Blockchain()
+    # Créer un thread pour l'API
+    api_thread = threading.Thread(target=start_api_server)
+    api_thread.daemon = True
+    api_thread.start()
     
-    # Ajouter des transactions
-    tx1 = Transaction("Alice", "Bob", 50)
-    tx2 = Transaction("Bob", "Charlie", 25)
+    print("Pychain démarré!")
+    print("API disponible sur http://localhost:5000")
     
-    blockchain.add_transaction(tx1)
-    blockchain.add_transaction(tx2)
-    
-    # Miner un bloc
-    blockchain.create_new_block()
-    
-    # Afficher la blockchain
-    blockchain.display_chain()
-    
-    # Vérifier les soldes
-    print(f"\nSolde Alice: {blockchain.get_balance('Alice')}")
-    print(f"Solde Bob: {blockchain.get_balance('Bob')}")
-    print(f"Solde Charlie: {blockchain.get_balance('Charlie')}")
-    
-    # Valider la blockchain
-    print(f"\nBlockchain valide: {blockchain.validate_chain()}")
+    try:
+        # Démarrer le mining continu
+        continuous_mining()
+    except KeyboardInterrupt:
+        print("\n[!] Arrêt de la blockchain")
+        sys.exit(0)
 
 if __name__ == "__main__":
     main()

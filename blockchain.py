@@ -12,6 +12,7 @@ class Blockchain:
 
     def genesis_block(self):
         block = Block(previous_hash="0", transactions=[], nonce=0, difficulty=self.difficulty)
+        block.mine_block(self.difficulty)
         return block
 
     def get_latest_block(self):
@@ -107,6 +108,16 @@ class Blockchain:
             for j, tx in enumerate(block.transactions):
                 print(f"    {j+1}. {tx.sender} -> {tx.recipient}: {tx.amount}")
 
-         
-    
-          
+    def is_last_block_mined(self):
+        """Vérifie si le dernier bloc a été miné
+        
+        Returns:
+            bool: True si le dernier bloc a été miné et qu'il n'y a pas de transactions en attente,
+                  False s'il y a des transactions en attente à miner
+        """
+        # Vérifie si le dernier bloc a un hash valide (commence par des zéros selon la difficulté)
+        last_block = self.get_latest_block()
+        if not last_block.hash.startswith('0' * self.difficulty):
+            return False
+            
+        return True

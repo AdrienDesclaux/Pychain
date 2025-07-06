@@ -49,7 +49,8 @@ export default function BlockchainExplorer() {
       const response = await fetch(`${API_BASE}/chain`)
       if (!response.ok) throw new Error("Failed to fetch chain")
       const data = await response.json()
-      setChain(data.chain || [])
+      console.log(data)
+      setChain(data || [])
     } catch (error) {
       toast({
         title: "Error",
