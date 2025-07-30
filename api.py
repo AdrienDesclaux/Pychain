@@ -25,6 +25,8 @@ def serialize_block(block):
 
 @app.route('/chain', methods=['GET'])
 def get_chain():
+    print("GET /chain")
+    print("Nombre de blocs: ", len(blockchain.blocks[0].transactions))
     return jsonify([serialize_block(block) for block in blockchain.blocks])
 
 @app.route('/mine', methods=['POST'])

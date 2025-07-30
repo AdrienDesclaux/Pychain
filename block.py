@@ -4,7 +4,7 @@ from typing import List
 from transaction import Transaction
 
 class Block:
-    def __init__(self, previous_hash, transactions, nonce=0, difficulty=4):
+    def __init__(self, previous_hash, transactions: List[Transaction], nonce=0, difficulty=4):
         self.transactions: List[Transaction] = transactions or []
         self.timestamp = time.time()
         self.previous_hash = previous_hash
@@ -20,7 +20,6 @@ class Block:
 
     def calculate_hash(self):
         """Calcule le hash du bloc"""
-        # Convertir les transactions en string pour le hachage
         transactions_string = "".join([tx.to_string() for tx in self.transactions])
         block_string = f"{self.previous_hash}{self.timestamp}{self.nonce}{transactions_string}"
         return hashlib.sha256(block_string.encode()).hexdigest()

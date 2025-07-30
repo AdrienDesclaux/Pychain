@@ -17,21 +17,13 @@ def start_api_server():
 def continuous_mining():
     """Fonction de mining continu pour la blockchain"""
     while True:
-        if blockchain.is_last_block_mined() and blockchain.pending_transactions:
+        if blockchain.is_last_block_mined() and len(blockchain.pending_transactions) > 50:
             new_block = blockchain.create_new_block()
             if new_block:
                 print(f"[+] Nouveau bloc miné! Hash: {new_block.hash[:10]}...")
                 blockchain.display_chain()
-                
-                # Afficher quelques soldes d'exemple
-                if blockchain.blocks and len(blockchain.blocks) > 1:
-                    print("\nExemple de soldes:")
-                    for address in set([tx.sender for tx in new_block.transactions] + [tx.recipient for tx in new_block.transactions]):
-                        if address != "SYSTEM": 
-                            print(f"Solde {address}: {blockchain.get_balance(address)}")
 
 def main():
-    # Créer un thread pour l'API
     api_thread = threading.Thread(target=start_api_server)
     api_thread.daemon = True
     api_thread.start()

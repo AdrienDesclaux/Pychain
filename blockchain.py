@@ -24,21 +24,30 @@ class Blockchain:
             # print("Aucune transaction en attente")
             return None
 
-        print("Transactions en attente:", self.pending_transactions)    
+        print(f"Nombre de transactions en attente: {len(self.pending_transactions)}")    
+        print(f"Premières transactions: {[f'{tx.sender[:10]}...-> {tx.recipient[:10]}...: {tx.amount}' for tx in self.pending_transactions[:5]]}")
+        
+        transactions_copy = self.pending_transactions.copy()
+        print(f"Nombre de transactions copiées: {len(transactions_copy)}")
         
         new_block = Block(
-            transactions=self.pending_transactions.copy(),
+            transactions=transactions_copy,
             previous_hash=self.get_latest_block().hash,
             difficulty=self.difficulty
         )
+
+        print(f"Nouveau bloc créé avec {len(new_block.transactions)} transactions")
         
         # Miner le bloc
         new_block.mine_block(self.difficulty)
         
+        print(f"Après minage, le bloc contient {len(new_block.transactions)} transactions")
+        
         # Ajouter le bloc à la chaîne
         self.blocks.append(new_block)
 
-        self.pending_transactions = []
+        # Retirer les transactions qui sont passés dans le block
+        self.pending_transactions = [tx for tx in self.pending_transactions if tx not in transactions_copy]
         
         return new_block
 
@@ -60,6 +69,7 @@ class Blockchain:
         
         self.pending_transactions.append(transaction)
         print(f"Transaction ajoutée: {transaction.sender} -> {transaction.recipient}: {transaction.amount}")
+        print(f"Nombre de transactions en attente: {len(self.pending_transactions)}")
 
     def validate_chain(self):
         """Valide l'intégrité de la blockchain"""
@@ -136,7 +146,6 @@ class Blockchain:
         
         addresses.extend(common_addresses)
         
-        # Créer et ajouter les transactions
         for _ in range(num_transactions):
             sender = random.choice(addresses)
             recipient = random.choice([addr for addr in addresses if addr != sender])
@@ -145,6 +154,7 @@ class Blockchain:
             tx = Transaction(sender, recipient, amount)
             self.add_transaction(tx)
         
+        print(f"{len(self.pending_transactions)} transactions aléatoires ajoutées")
         return num_transactions
 
     def is_last_block_mined(self):
